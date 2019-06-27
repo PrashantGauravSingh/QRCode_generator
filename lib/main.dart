@@ -7,6 +7,7 @@ import 'package:qr_utils/qr_utils.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
 
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -17,6 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   Image _qrImg;
+  String imageB64;
   TextEditingController _qrTextEditingController = TextEditingController();
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
@@ -105,16 +107,19 @@ class _MyAppState extends State<MyApp> {
               //print("Capture Done");
               setState(() {
                 _imageFile = image;
+                print(_imageFile.path);
+                List<int> imageBytes = _imageFile.readAsBytesSync();
+                imageB64 = base64Encode(imageBytes);
+                if(_imageFile!=null)
+                  Share.share(imageB64);
               });
 
             }).catchError((onError) {
               print(onError);
             });
-            List<int> imageBytes = _imageFile.readAsBytesSync();
-            String imageB64 = base64Encode(imageBytes);
 
-            if(_imageFile!=null)
-            Share.share(imageB64);
+
+
           },
           tooltip: 'Increment',
           child: Icon(Icons.share),
